@@ -37,8 +37,8 @@ export class Log {
 }
 
 type LogsFilterByFailureOptionType = {
-  thresholds?: {
-    timeout?: number
+  thresholds: {
+    timeout: number
   }
 }
 
@@ -76,7 +76,9 @@ export class Logs extends Array<Log> {
     )
   }
 
-  filterByFailure(option?: LogsFilterByFailureOptionType): Logs {
+  filterByFailure(
+    option: LogsFilterByFailureOptionType = { thresholds: { timeout: 1 } }
+  ): Logs {
     const results = new Logs()
 
     Array.from(this.groupByAddress().values()).forEach((logs) => {
@@ -89,7 +91,7 @@ export class Logs extends Array<Log> {
 
         timeoutLogs.push(log)
 
-        if (timeoutLogs.length === (option?.thresholds?.timeout ?? 1)) {
+        if (timeoutLogs.length === option.thresholds.timeout) {
           results.push(timeoutLogs[0])
         }
 
