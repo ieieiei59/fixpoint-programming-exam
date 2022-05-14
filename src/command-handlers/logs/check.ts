@@ -61,7 +61,8 @@ export const logsCheckCommandHandler = async ({
       resultData.map((item) => ({
         ...item,
         duration:
-          item.duration && formatDuration(item.duration, { locale: ja }),
+          (item.duration && formatDuration(item.duration, { locale: ja })) ||
+          "未復旧",
       })),
       {
         address: { header: "Address" },
