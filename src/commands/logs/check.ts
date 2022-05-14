@@ -8,11 +8,11 @@ export default class Check extends Command {
   static examples = [
     [
       "$ ping-logs-cli logs check <log-file-path>",
-      "Address            Duration      Nth-time",
-      "────────────────── ───────────── ────────",
-      "aaa.bbb.ccc.ddd/ee hh時間mm分ss秒 1",
-      "aaa.bbb.ccc.ddd/ee hh時間mm分ss秒 2",
-      "aaa.bbb.ccc.fff/gg hh時間mm分ss秒 1",
+      "Address            Period",
+      "────────────────── ─────────────────────────────────────────────────────",
+      "aaa.bbb.ccc.ddd/ee YYYY年MM月DD日hh時mm分ss秒 ~ YYYY年MM月DD日hh時mm分ss秒",
+      "aaa.bbb.ccc.ddd/ee YYYY年MM月DD日hh時mm分ss秒 ~ YYYY年MM月DD日hh時mm分ss秒",
+      "aaa.bbb.ccc.fff/gg YYYY年MM月DD日hh時mm分ss秒 ~ YYYY年MM月DD日hh時mm分ss秒",
     ].join("\n"),
   ]
 

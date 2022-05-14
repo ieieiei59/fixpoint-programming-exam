@@ -1,4 +1,4 @@
-import { Duration, intervalToDuration, parse } from "date-fns"
+import { parse } from "date-fns"
 import { IPv4 } from "./ip"
 
 export class Log {
@@ -18,13 +18,6 @@ export class Log {
       new IPv4(ipv4Text),
       isNaN(time) ? null : time
     )
-  }
-
-  static getDurationLogs(timeoutLog: Log, nextLog: Log): Duration {
-    return intervalToDuration({
-      start: timeoutLog.timestamp,
-      end: nextLog.timestamp,
-    })
   }
 
   isSameAddress(target: Log): boolean {

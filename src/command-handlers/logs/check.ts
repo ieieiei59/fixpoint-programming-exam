@@ -1,9 +1,7 @@
 import { cli } from "cli-ux"
-import { Duration, formatDuration } from "date-fns"
-import { ja } from "date-fns/locale"
-import { readFile } from "fs/promises"
 import { readLogFile } from "../../common/read-log-file"
-import { Log, Logs } from "../../models/log"
+import { Log } from "../../models/log"
+import { Period } from "../../models/period"
 
 export type LogsCheckCommandHandlerArgsType = {
   logFilePath: string
@@ -13,8 +11,7 @@ export type LogsCheckCommandHandlerArgsType = {
 export type LogsCheckCommandHandlerResultType = {
   resultData: {
     address: string
-    duration: Duration | undefined
-    nthTime: number
+    period: Period
   }[]
   dumpResultData: () => void
 }
@@ -42,13 +39,13 @@ export const logsCheckCommandHandler = async ({
         timeoutLog,
         nextLog: logs.filterByTimeout(false).findNext(timeoutLog),
       }))
-      .map((item, index) => {
-        const duration =
-          item.nextLog === undefined
-            ? undefined
-            : Log.getDurationLogs(item.timeoutLog, item.nextLog)
+      .map((item) => {
+        const period = new Period(
+          item.timeoutLog.timestamp,
+          item.nextLog?.timestamp ?? null
+        )
 
-        return { address, duration, nthTime: index + 1 }
+        return { address, period }
       })
 
     return [...results, ...additionalResults]
@@ -58,14 +55,11 @@ export const logsCheckCommandHandler = async ({
     cli.table(
       resultData.map((item) => ({
         ...item,
-        duration:
-          (item.duration && formatDuration(item.duration, { locale: ja })) ||
-          "未復旧",
+        period: item.period.toString(),
       })),
       {
         address: { header: "Address" },
-        duration: { header: "Duration" },
-        nthTime: { header: "Nth-time" },
+        period: { header: "Period" },
       }
     )
   }
