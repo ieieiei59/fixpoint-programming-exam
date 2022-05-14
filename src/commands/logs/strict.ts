@@ -1,9 +1,5 @@
 import { Command } from "@oclif/core"
-import { cli } from "cli-ux"
-import { formatDuration, intervalToDuration } from "date-fns"
-import { ja } from "date-fns/locale"
-import { readFile } from "fs/promises"
-import { Log, Logs } from "../../models/log"
+import { logsStrictCommandHandler } from "../../command-handlers/logs/strict"
 
 export default class Strict extends Command {
   static description =
@@ -30,55 +26,16 @@ export default class Strict extends Command {
     },
   ]
 
-  getDuration(timeoutLog: Log, nextLog: Log): string {
-    return formatDuration(
-      intervalToDuration({
-        start: timeoutLog.timestamp,
-        end: nextLog.timestamp,
-      }),
-      { locale: ja }
-    )
-  }
-
   async run(): Promise<void> {
+    type FlagsType = {}
     type ArgsType = { logFilePath: string }
 
-    const { args } = await this.parse<typeof Strict.flags, ArgsType>(Strict)
+    const { args } = await this.parse<FlagsType, ArgsType>(Strict)
 
-    const rawLogs = await readFile(args.logFilePath, "utf-8")
-    const logs = new Logs(
-      ...rawLogs.split("\n").map((rawLog: string) => Log.parse(rawLog))
-    )
+    const { dumpResultData } = await logsStrictCommandHandler({
+      logFilePath: args.logFilePath,
+    })
 
-    const addressLogsMap = logs.groupByAddress()
-
-    const results = Array.from(addressLogsMap.keys()).reduce<
-      { Address: string; Duration: string; "Nth-time": number }[]
-    >((results, address) => {
-      const logs = addressLogsMap.get(address)
-
-      if (logs === undefined) {
-        return results
-      }
-
-      const additionalResults = logs
-        .filterByTimeout()
-        .map((timeoutLog: Log) => ({
-          timeoutLog,
-          nextLog: logs.findNext(timeoutLog),
-        }))
-        .map((item, index) => {
-          const duration =
-            item.nextLog === undefined
-              ? "未復旧"
-              : this.getDuration(item.timeoutLog, item.nextLog)
-
-          return { Address: address, Duration: duration, "Nth-time": index + 1 }
-        })
-
-      return [...results, ...additionalResults]
-    }, [])
-
-    cli.table(results, { Address: {}, Duration: {}, "Nth-time": {} })
+    dumpResultData()
   }
 }
