@@ -2,6 +2,7 @@ import { cli } from "cli-ux"
 import { Duration, formatDuration } from "date-fns"
 import { ja } from "date-fns/locale"
 import { readFile } from "fs/promises"
+import { readLogFile } from "../../common/read-log-file"
 import { Log, Logs } from "../../models/log"
 
 export type LogsCheckCommandHandlerArgsType = {
@@ -22,10 +23,7 @@ export const logsCheckCommandHandler = async ({
   logFilePath,
   thresholdTimeout,
 }: LogsCheckCommandHandlerArgsType): Promise<LogsCheckCommandHandlerResultType> => {
-  const rawLogs = await readFile(logFilePath, "utf-8")
-  const logs = new Logs(
-    ...rawLogs.split("\n").map((rawLog: string) => Log.parse(rawLog))
-  )
+  const logs = await readLogFile(logFilePath)
 
   const addressLogsMap = logs.groupByAddress()
 
