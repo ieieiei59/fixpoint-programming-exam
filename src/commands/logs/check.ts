@@ -1,10 +1,5 @@
 import { Command, Flags } from "@oclif/core"
-import { FlagInput, Input } from "@oclif/core/lib/interfaces"
-import { cli } from "cli-ux"
-import { formatDuration, intervalToDuration } from "date-fns"
-import { ja } from "date-fns/locale"
-import { readFile } from "fs/promises"
-import { Log, Logs } from "../../models/log"
+import { logsCheckCommandHandler } from "../../command-handlers/logs/check"
 
 export default class Check extends Command {
   static description =
@@ -33,56 +28,17 @@ export default class Check extends Command {
     },
   ]
 
-  getDuration(timeoutLog: Log, nextLog: Log): string {
-    return formatDuration(
-      intervalToDuration({
-        start: timeoutLog.timestamp,
-        end: nextLog.timestamp,
-      }),
-      { locale: ja }
-    )
-  }
-
   async run(): Promise<void> {
     type FlagsType = { n: number }
     type ArgsType = { logFilePath: string }
 
     const { args, flags } = await this.parse<FlagsType, ArgsType>(Check)
 
-    const rawLogs = await readFile(args.logFilePath, "utf-8")
-    const logs = new Logs(
-      ...rawLogs.split("\n").map((rawLog: string) => Log.parse(rawLog))
-    )
+    const { dumpResultData } = await logsCheckCommandHandler({
+      logFilePath: args.logFilePath,
+      thresholdTimeout: flags.n,
+    })
 
-    const addressLogsMap = logs.groupByAddress()
-
-    const results = Array.from(addressLogsMap.keys()).reduce<
-      { Address: string; Duration: string; "Nth-time": number }[]
-    >((results, address) => {
-      const logs = addressLogsMap.get(address)
-
-      if (logs === undefined) {
-        return results
-      }
-
-      const additionalResults = logs
-        .filterByFailure({ thresholds: { timeout: flags.n } })
-        .map((timeoutLog: Log) => ({
-          timeoutLog,
-          nextLog: logs.filterByTimeout(false).findNext(timeoutLog),
-        }))
-        .map((item, index) => {
-          const duration =
-            item.nextLog === undefined
-              ? "未復旧"
-              : this.getDuration(item.timeoutLog, item.nextLog)
-
-          return { Address: address, Duration: duration, "Nth-time": index + 1 }
-        })
-
-      return [...results, ...additionalResults]
-    }, [])
-
-    cli.table(results, { Address: {}, Duration: {}, "Nth-time": {} })
+    dumpResultData()
   }
 }
