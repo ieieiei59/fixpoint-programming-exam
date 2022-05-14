@@ -23,6 +23,16 @@ export class Log {
   isSameAddress(target: Log): boolean {
     return this.address.equals(target.address)
   }
+
+  get isTimeout(): boolean {
+    return this.time === null
+  }
+}
+
+type LogsFilterByFailureOptionType = {
+  thresholds?: {
+    timeout?: number
+  }
 }
 
 export class Logs extends Array<Log> {
@@ -53,8 +63,34 @@ export class Logs extends Array<Log> {
     )
   }
 
-  filterByTimeout(): Logs {
-    return new Logs(...this.filter((log: Log) => log.time === null))
+  filterByTimeout(flag: boolean = true): Logs {
+    return new Logs(
+      ...this.filter((log: Log) => (flag ? log.isTimeout : !log.isTimeout))
+    )
+  }
+
+  filterByFailure(option?: LogsFilterByFailureOptionType): Logs {
+    const results = new Logs()
+
+    Array.from(this.groupByAddress().values()).forEach((logs) => {
+      const timeoutLogs: Log[] = []
+      logs.sortByTimestamp().forEach((log) => {
+        if (!log.isTimeout) {
+          timeoutLogs.splice(0)
+          return
+        }
+
+        timeoutLogs.push(log)
+
+        if (timeoutLogs.length === (option?.thresholds?.timeout ?? 1)) {
+          results.push(timeoutLogs[0])
+        }
+
+        return
+      })
+    })
+
+    return results
   }
 
   static get [Symbol.species](): ArrayConstructor {
