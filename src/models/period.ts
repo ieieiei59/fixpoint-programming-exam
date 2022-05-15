@@ -8,6 +8,9 @@ const formatDateTime = (date: Date | null): string => {
   return format(date, "yyyy年MM月dd日HH時mm分ss秒")
 }
 
+/**
+ * 期間データモデル
+ */
 export class Period {
   constructor(
     public readonly from: Date | null,

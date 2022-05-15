@@ -1,6 +1,11 @@
 import { parse } from "date-fns"
 import { IPv4 } from "./ip"
 
+/**
+ * ログモデル
+ *
+ * ログファイルの一行文のデータをモデル化したクラス
+ */
 export class Log {
   constructor(
     public readonly timestamp: Date,
@@ -35,6 +40,12 @@ type LogsFilterByFailureOptionType = {
   }
 }
 
+/**
+ * ログコレクションモデル
+ *
+ * 複数のログモデルを取り扱うクラス
+ * 特有のグルーピング関数やフィルタ関数などを実装
+ */
 export class Logs extends Array<Log> {
   groupByAddress(): Map<string, Logs> {
     return this.reduce(

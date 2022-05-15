@@ -12,6 +12,15 @@ export type LogsCheckSubnetCommandHandlerResultType = {
   dumpResultData: () => void
 }
 
+/**
+ * 設問4の処理を実施する関数
+ *
+ * 処理はほぼ設問2と同じ
+ * 違いがある部分は以下の通り
+ * - ログデータのアドレス部分を別クラスに置き換え IPv4 -> IPv4Subnet
+ * - 結果データのキーを変更
+ * - 表示用関数のキー・ヘッダを変更
+ */
 export const logsCheckSubnetCommandHandler = async ({
   logFilePath,
   thresholdTimeout,

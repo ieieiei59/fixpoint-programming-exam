@@ -1,6 +1,9 @@
 import { Command } from "@oclif/core"
 import { logsStrictCommandHandler } from "../../command-handlers/logs/strict"
 
+/**
+ * 設問1 に対応するコマンドクラス
+ */
 export default class Strict extends Command {
   static description =
     "一度でもタイムアウトがあれば故障とし、さらに次に応答があるまでの期間を故障期間として、故障対象サーバーアドレスと故障期間を表示する。"

@@ -1,6 +1,9 @@
 import { Command, Flags } from "@oclif/core"
 import { logsCheckCommandHandler } from "../../command-handlers/logs/check"
 
+/**
+ * 設問2に対応するコマンドクラス
+ */
 export default class Check extends Command {
   static description =
     "N回タイムアウトがあれば故障とし、さらに次に応答があるまでの期間を故障期間として、故障対象サーバーアドレスと故障期間を表示する。"

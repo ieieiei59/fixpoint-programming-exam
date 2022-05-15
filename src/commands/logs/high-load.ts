@@ -1,6 +1,9 @@
 import { Command, Flags } from "@oclif/core"
 import { logsHighLoadCommandHandler } from "../../command-handlers/logs/high-load"
 
+/**
+ * 設問3に対応するコマンドクラス
+ */
 export default class HighLoad extends Command {
   static description =
     "応答時間がtミリ秒以上となるログがm回以上続いた場合は高負荷状態とし、対象サーバーアドレスと高負荷期間を表示する。"

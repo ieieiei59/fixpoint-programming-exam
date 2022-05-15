@@ -14,6 +14,17 @@ type LogsHighLoadCommandHandlerResultsType = {
   dumpResultData: () => void
 }
 
+/**
+ * 設問3の処理を実施する関数
+ *
+ * 処理としては、以下の流れ
+ * 1. ログデータをアドレスごとにグルーピング
+ * 2. グルーピングされたデータそれぞれから設問3の条件に合うログデータを抜き出す
+ *    ※ その際、応答時間が回復した最初のログデータも含める
+ * 3. 表示用関数を作成し、2のデータとともに返却
+ *    ※ 表示時には、ログデータの末尾に応答時間が回復したログが存在すれば、Periodのtoとして利用する
+ *       存在しなければ、Periodはfromのみで扱う (fromはどの場合もログの先頭を利用)
+ */
 export const logsHighLoadCommandHandler = async ({
   logFilePath,
   thresholdTime,

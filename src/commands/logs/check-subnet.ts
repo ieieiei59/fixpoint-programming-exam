@@ -1,6 +1,9 @@
 import { Command, Flags } from "@oclif/core"
 import { logsCheckSubnetCommandHandler } from "../../command-handlers/logs/check-subnet"
 
+/**
+ * 設問4に対応するコマンドクラス
+ */
 export default class CheckSubnet extends Command {
   static description =
     "N回タイムアウトがあれば故障とし、さらに次に応答があるまでの期間を故障期間として、故障対象サブネットと故障期間を表示する。"
