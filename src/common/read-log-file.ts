@@ -7,6 +7,15 @@ import { Log, Logs } from "../models/log"
 export const readLogFile = async (logFilePath: string): Promise<Logs> => {
   const rawLogs = await readFile(logFilePath, "utf-8")
   return new Logs(
-    ...rawLogs.split("\n").map((rawLog: string) => Log.parse(rawLog))
+    ...rawLogs
+      .split("\n")
+      .map((rawLog: string) => {
+        try {
+          return Log.parse(rawLog)
+        } catch (e) {
+          return undefined
+        }
+      })
+      .filter((item): item is Log => item !== undefined)
   )
 }
