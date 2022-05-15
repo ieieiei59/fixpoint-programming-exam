@@ -47,6 +47,17 @@ export class Logs extends Array<Log> {
     )
   }
 
+  groupByTimestamp(): Map<number, Logs> {
+    return this.reduce(
+      (map, log) =>
+        map.set(
+          log.timestamp.getTime(),
+          new Logs(...(map.get(log.timestamp.getTime()) ?? []), log)
+        ),
+      new Map<number, Logs>()
+    )
+  }
+
   findNext(log: Log): Log | undefined {
     const sameAddressLogs = this.groupByAddress().get(log.address.toString())
 
