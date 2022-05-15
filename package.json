@@ -1,6 +1,6 @@
 {
   "name": "ping-logs-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "handle ping logs cli",
   "author": "ieieiei59 @ieieiei59",
   "bin": {
