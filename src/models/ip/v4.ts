@@ -1,3 +1,10 @@
+/**
+ * IPv4モデル
+ *
+ * プレフィックス付きのIPv4アドレスをモデル化したクラス
+ *
+ * サブネットのアドレス範囲の出力や、アドレスの比較を行う
+ */
 export class IPv4 {
   public readonly firstOctet: number
   public readonly secondOctet: number
@@ -61,6 +68,12 @@ export class IPv4 {
   }
 }
 
+/**
+ * IPv4サブネットモデル
+ *
+ * 主に、設問4と設問2の処理をほぼ同一のもので完結させるために利用
+ * サブネットが同一であれば、equals関数の結果がtrueになる
+ */
 export class IPv4AsSubnet extends IPv4 {
   toString() {
     return this.toSubnetString()

@@ -16,6 +16,15 @@ export type LogsCheckCommandHandlerResultType = {
   dumpResultData: () => void
 }
 
+/**
+ * 設問2の処理を実施する関数
+ *
+ * 処理としては、以下の流れ
+ * 1. ログデータをアドレスでグルーピング
+ * 2. グルーピングしたデータを日付順に並べ、故障条件を満たすログ郡の先頭を取得
+ * 3. 2で取得した故障ログをもとに、復旧した際のログを取得する
+ * 4. 2, 3の情報を利用して結果・表示用関数を作成し、返却する
+ */
 export const logsCheckCommandHandler = async ({
   logFilePath,
   thresholdTimeout,
