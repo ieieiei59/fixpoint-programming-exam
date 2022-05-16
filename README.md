@@ -32,6 +32,9 @@ $ ping-logs-cli logs strict <log-file-path>
 or
 
 $ npx ping-logs-cli logs strict path/to/log-file
+
+or // 開発環境
+$ bin/dev logs strict path/to/log-file
 ```
 
 ## プログラム構成
